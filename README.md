@@ -40,7 +40,7 @@ To run the binary which would be fat jar from the project base directory:
     - class join, one event per member specified in payload will be created.
     - course assign to class, class members will be looked up and one event per member of class will be created
     - OOB, this won't be used by API per se, but by READ handler to post message along with member id in case of 404
-        - This may also be used as API to trigger rescope on adhoc basis
+        - This may also be used as API to trigger baseline on adhoc basis
 - Note that here we won't validate if class member may have (with current UI flows may not be possible) baselined profile already. That will be done downstream
 - Downstream processor will be responsible to process the data
 - For processing the better of learner profile and class floor setting need to be considered
@@ -76,7 +76,7 @@ To run the binary which would be fat jar from the project base directory:
     - The queue in DB is going to have a status field with values - null, dispatched, processing
     - Record will be inserted in queue with status as null
     - When timer thread picks that up and sends to message bus, it will be marked as dispatched
-    - When worker threads pick up the record to process, they first check to see if the record is present in table with status as dispatched and record is not present in rescope table, then the record will be marked as processing and will be processed
+    - When worker threads pick up the record to process, they first check to see if the record is present in table with status as dispatched and record is not present in profile baseline table, then the record will be marked as processing and will be processed
     - Once processing is done, this record will be deleted from queue
     - For the first run of timer thread, it should clean up all statuses in DB queue so that they are picked up for processing downstream
     - The number of records that are read from DB/queue and dumped on to message bus for processing, needs to be configurable
