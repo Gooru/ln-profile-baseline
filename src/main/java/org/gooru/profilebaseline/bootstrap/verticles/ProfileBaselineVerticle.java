@@ -75,8 +75,7 @@ public class ProfileBaselineVerticle extends AbstractVerticle {
     boolean replyNeeded = true;
     switch (op) {
       case Constants.Message.MSG_OP_LP_BASELINE_DO:
-        // TODO: Implement this
-        future = ProcessorBuilder.buildPlaceHolderExceptionProcessor(vertx, message).process();
+        future = ProcessorBuilder.buildLPBaselineProcessor(vertx, message).process();
         replyNeeded = false;
         break;
       default:

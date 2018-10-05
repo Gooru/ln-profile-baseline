@@ -1,4 +1,4 @@
-package org.gooru.profilebaseline.infra.services;
+package org.gooru.profilebaseline.infra.services.queueoperators;
 
 import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
 import org.skife.jdbi.v2.DBI;
@@ -8,7 +8,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author ashish
  */
-class ProfileBaselineQueueRecordDispatcherServiceImpl implements ProfileBaselineQueueRecordDispatcherService {
+class ProfileBaselineQueueRecordDispatcherServiceImpl implements
+    ProfileBaselineQueueRecordDispatcherService {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(ProfileBaselineQueueRecordDispatcherService.class);

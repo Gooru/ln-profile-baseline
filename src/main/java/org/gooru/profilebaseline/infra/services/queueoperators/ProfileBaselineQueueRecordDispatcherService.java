@@ -1,4 +1,4 @@
-package org.gooru.profilebaseline.infra.services;
+package org.gooru.profilebaseline.infra.services.queueoperators;
 
 import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
 import org.gooru.profilebaseline.infra.jdbi.DBICreator;

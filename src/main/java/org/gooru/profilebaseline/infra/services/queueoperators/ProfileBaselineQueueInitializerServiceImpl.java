@@ -1,4 +1,4 @@
-package org.gooru.profilebaseline.infra.services;
+package org.gooru.profilebaseline.infra.services.queueoperators;
 
 import org.skife.jdbi.v2.DBI;
 
