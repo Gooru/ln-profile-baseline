@@ -81,3 +81,18 @@ To run the binary which would be fat jar from the project base directory:
     - For the first run of timer thread, it should clean up all statuses in DB queue so that they are picked up for processing downstream
     - The number of records that are read from DB/queue and dumped on to message bus for processing, needs to be configurable
 
+#### Core processing logic
+- Verify it baseline is not already done or is picked up by some other thread. If any of these two cases, no action needed
+- Validate the class/user/course combination for not being not deleted. If it is, no action needed
+- If class context is present, fetch the low grade line. Note that it could be null as well. In IL case it will be null (or empty)
+- Fetch the subject bucket associated with the course. If subject bucket is not present, no action needed further
+- Fetch the current learner profile for specified subject as LP line
+- Now that there is LP line and low grade line, do a UNION to get the better of these two
+- Persist the resultant line as LP baseline. Note that there is need to persist both the master and details record
+- Fetch the read API kind of response, with join of domain/competency/baseline path. Note that this contains domain's name as well as sequence
+- Create a JSON from resultant response
+- Persist the specified JSON as cached value
+
+### Baseline LP READ API
+- The read API now needs to be modified so that it can read the cached value in JSON format to serve instead of reading the detail records and doing join with other relevant bits
+
