@@ -92,6 +92,7 @@ To run the binary which would be fat jar from the project base directory:
 - Fetch the read API kind of response, with join of domain/competency/baseline path. Note that this contains domain's name as well as sequence
 - Create a JSON from resultant response
 - Persist the specified JSON as cached value
+- Send out a message for post processing
 
 ### Baseline LP READ API
 - The read API now needs to be modified so that it can read the cached value in JSON format to serve instead of reading the detail records and doing join with other relevant bits
