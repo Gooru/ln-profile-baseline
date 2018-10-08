@@ -1,15 +1,35 @@
 package org.gooru.profilebaseline.infra.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.gooru.profilebaseline.infra.data.ProfileBaselineProcessingContext;
 import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
 import org.gooru.profilebaseline.infra.services.queueoperators.ProfileBaselineDequeuer;
 import org.gooru.profilebaseline.infra.services.queueoperators.ProfileBaselineProcessingEligibilityVerifier;
+import org.gooru.profilebaseline.infra.services.subjectinferer.SubjectInferer;
+import org.gooru.profilebaseline.infra.services.validators.ContextValidator;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Here is the algorithmic logic:
+ * <li> Verify it baseline is not already done or is picked up by some other thread. If any of
+ * these two cases, no action needed
+ * <li> Validate the class/user/course combination for not being not deleted. If it is, no action
+ * needed
+ * <li> If class context is present, fetch the low grade line. Note that it could be null as well.
+ * In IL case it will be null (or empty)
+ * <li> Fetch the subject bucket associated with the course. If subject bucket is not present, no
+ * action needed further
+ * <li> Fetch the current learner profile for specified subject as LP line
+ * <li> Now that there is LP line and low grade line, do a UNION to get the better of these two
+ * <li> Persist the resultant line as LP baseline. Note that there is need to persist both the
+ * master and details record
+ * <li> Fetch the read API kind of response, with join of domain/competency/baseline path. Note
+ * that this contains domain's name as well as sequence
+ * <li> Create a JSON from resultant response
+ * <li> Persist the specified JSON as cached value
+ * <li> Send out a message for post processing
+ *
  * @author ashish.
  */
 
@@ -21,6 +41,7 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
   private ProfileBaselineQueueModel model;
   private static final Logger LOGGER = LoggerFactory
       .getLogger(ProfileBaselineQueueRecordProcessingServiceImpl.class);
+  private ProfileBaselineProcessingContext context;
 
   ProfileBaselineQueueRecordProcessingServiceImpl(DBI dbi4core, DBI dbi4ds) {
     this.dbi4core = dbi4core;
@@ -46,27 +67,29 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
 
   private void processRecord() {
     LOGGER.debug("Doing real processing");
-    // TODO: Implement this
+    context = ProfileBaselineProcessingContext.buildFromProfileBaselineQueueModel(model);
 
     // Don't let exception leak, handle it here
-/*
     try {
-      SkippedItemsResponse items = RescopeProcessor.buildRescopeProcessor()
-          .rescopedItems(RescopeProcessorContext.buildFromRescopeQueueModel(model));
-      ObjectMapper mapper = new ObjectMapper();
-      try {
-        String skippedItemsString = mapper.writeValueAsString(items);
-        dao.persistRescopedContent(model, skippedItemsString);
-      } catch (JsonProcessingException e) {
-        LOGGER.warn("Not able to convert skipped items to JSON for model '{}'", model.toJson(), e);
-      }
-    } catch (Exception e) {
-      LOGGER.warn("Not able to do rescope for model: '{}'. Will dequeue record.", e);
+      validate();
+      initializeSubject();
+
+      // TODO: Implement this
+      // Real processing logic
+    } catch (Throwable e) {
+      LOGGER.warn("Not able to do profile baseline for model: '{}'. Will dequeue record.", e);
     } finally {
       dequeueRecord();
     }
-*/
   }
 
+  private void validate() {
+    ContextValidator.build(dbi4core, dbi4ds).validate(context);
+  }
+
+  private void initializeSubject() {
+    String subject = SubjectInferer.build(dbi4core).inferSubjectForCourse(context.getCourseId());
+    context.setSubject(subject);
+  }
 
 }
