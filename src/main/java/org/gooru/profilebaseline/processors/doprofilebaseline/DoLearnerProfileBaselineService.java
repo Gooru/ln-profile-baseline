@@ -32,7 +32,7 @@ class DoLearnerProfileBaselineService {
 
   private void doProfileBaselineForIL() {
     if (command.isOverride()) {
-      resetProfileBaselineForSpecifiedMemersForIL();
+      resetProfileBaselineForSpecifiedMembersForIL();
     }
     queueProfileBaselineRequests();
   }
@@ -48,7 +48,7 @@ class DoLearnerProfileBaselineService {
     queueProfileBaselineRequests();
   }
 
-  private void resetProfileBaselineForSpecifiedMemersForIL() {
+  private void resetProfileBaselineForSpecifiedMembersForIL() {
     fetchDao().resetProfileBaselineInfoForILForSpecifiedUsers(
         CollectionUtils.convertFromListUUIDToSqlArrayOfUUID(command.getMemberIds()),
         command.getCourseId());

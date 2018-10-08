@@ -8,6 +8,7 @@ import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import org.gooru.profilebaseline.infra.constants.Constants;
 import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
+import org.gooru.profilebaseline.infra.services.ProfileBaselineQueueRecordProcessingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +49,7 @@ public class ProfileBaselineProcessingVerticle extends AbstractVerticle {
     vertx.executeBlocking(future -> {
       try {
         ProfileBaselineQueueModel model = ProfileBaselineQueueModel.fromJson(message.body());
-        // TODO: Implement this
-//        ProfileBaselineQueueRecordProcessingService.build().doLpBaseline(model);
+        ProfileBaselineQueueRecordProcessingService.build().doProfileBaseline(model);
         sendMessageToPostProcessor(model);
         future.complete();
       } catch (Exception e) {
