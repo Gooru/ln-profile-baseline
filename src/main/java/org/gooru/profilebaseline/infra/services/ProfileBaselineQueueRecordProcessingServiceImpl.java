@@ -2,6 +2,11 @@ package org.gooru.profilebaseline.infra.services;
 
 import org.gooru.profilebaseline.infra.data.ProfileBaselineProcessingContext;
 import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
+import org.gooru.profilebaseline.infra.services.algebra.competency.CompetencyLine;
+import org.gooru.profilebaseline.infra.services.baselineprofilepersister.BaselineProfilePersister;
+import org.gooru.profilebaseline.infra.services.baselineprofilereadcacheupdater.BaselineProfileReadCacheUpdater;
+import org.gooru.profilebaseline.infra.services.classsetting.ClassGradeLowBoundFinder;
+import org.gooru.profilebaseline.infra.services.learnerprofile.LearnerProfileProvider;
 import org.gooru.profilebaseline.infra.services.queueoperators.ProfileBaselineDequeuer;
 import org.gooru.profilebaseline.infra.services.queueoperators.ProfileBaselineProcessingEligibilityVerifier;
 import org.gooru.profilebaseline.infra.services.subjectinferer.SubjectInferer;
@@ -73,9 +78,22 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
     try {
       validate();
       initializeSubject();
+      // fetch low grade
+      CompetencyLine lowGradeLine = ClassGradeLowBoundFinder.build(dbi4core, dbi4ds)
+          .findLowGradeForClass(context);
+      // fetch learner profile
+      CompetencyLine learnerProfileLine = LearnerProfileProvider.build(dbi4core, dbi4ds)
+          .findLearnerProfileForUser(context);
+      // merge these two lines
+      CompetencyLine resultLine = learnerProfileLine.merge(lowGradeLine, true);
 
-      // TODO: Implement this
-      // Real processing logic
+      // persist the line in both master and details
+      Long baselineProfileId = BaselineProfilePersister.build(dbi4ds).persist(context, resultLine);
+
+      // morph into read API response and update it in json field
+      BaselineProfileReadCacheUpdater.build(dbi4ds)
+          .createCachedResponseAndUpdateProfile(context, baselineProfileId);
+
     } catch (Throwable e) {
       LOGGER.warn("Not able to do profile baseline for model: '{}'. Will dequeue record.", e);
     } finally {
