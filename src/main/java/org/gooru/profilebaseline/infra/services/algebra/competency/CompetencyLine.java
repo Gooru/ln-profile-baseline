@@ -44,6 +44,22 @@ public interface CompetencyLine {
    */
   boolean isEmpty();
 
+  /**
+   * Merge this competency line with specified competency line and return the result competency
+   * line
+   *
+   * The merge is progression aware. It picks up the higher progression competency in common
+   * domains. In case the domain is not present in one of competency lines, whatever is present is
+   * picked up. If one of the competency lines is empty, the other one is returned. Both lines
+   * should belong to same subject bucket, else result will not make sense
+   *
+   * @param competencyLine The target line with which merge need to be done
+   * @param mergeWithHighValue If true, then while merging result will be higher value based on
+   * progression.
+   * @return New competencyLine which represents the merged line
+   */
+  CompetencyLine merge(CompetencyLine competencyLine, boolean mergeWithHighValue);
+
   static CompetencyLine build(CompetencyMap competencyMap, boolean ceiling) {
     return new CompetencyLineImpl(competencyMap, ceiling);
   }
