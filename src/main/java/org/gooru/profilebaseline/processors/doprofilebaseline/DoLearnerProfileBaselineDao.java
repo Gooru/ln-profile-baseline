@@ -12,16 +12,16 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 interface DoLearnerProfileBaselineDao {
 
 
-  @SqlQuery("delete from baseline_learner_profile_master where user_id = any(:userIds) and course_id = :courseId and class_id is null")
+  @SqlQuery("delete from learner_profile_baselined where user_id = any(:userIds) and course_id = :courseId and class_id is null")
   void resetProfileBaselineInfoForILForSpecifiedUsers(@Bind("userIds") PGArray<UUID> userIds,
       @Bind("courseId") UUID courseId);
 
 
-  @SqlQuery("delete from baseline_learner_profile_master where user_id = any(:userIds) and course_id = :courseId and class_id = :classId")
+  @SqlQuery("delete from learner_profile_baselined where user_id = any(:userIds) and course_id = :courseId and class_id = :classId")
   void resetProfileBaselineInfoInClassForSpecifiedUsers(@Bind("userIds") PGArray<UUID> userIds,
       @Bind("courseId") UUID courseId, @Bind("classId") UUID classId);
 
-  @SqlQuery("delete from baseline_learner_profile_master where course_id = :courseId and class_id = :classId")
+  @SqlQuery("delete from learner_profile_baselined where course_id = :courseId and class_id = :classId")
   void resetProfileBaselineInfoInClassForAllUsers(@Bind("courseId") UUID courseId,
       @Bind("classId") UUID classId);
 }

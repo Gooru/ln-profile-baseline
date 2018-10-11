@@ -12,12 +12,12 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 interface ProfileBaselineProcessingEligibilityVerifierDao {
 
   @SqlQuery(
-      "select exists (select 1 from baseline_learner_profile_master where user_id = :userId and "
+      "select exists (select 1 from learner_profile_baselined where user_id = :userId and "
           + " course_id = :courseId  and class_id is null)")
   boolean profileBaselineDoneForUserInIL(@BindBean ProfileBaselineQueueModel model);
 
   @SqlQuery(
-      "select exists (select 1 from baseline_learner_profile_master where user_id = :userId and "
+      "select exists (select 1 from learner_profile_baselined where user_id = :userId and "
           + "course_id = :courseId  and class_id = :classId)")
   boolean profileBaselineDoneForUserInClass(@BindBean ProfileBaselineQueueModel model);
 
