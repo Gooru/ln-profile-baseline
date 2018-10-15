@@ -45,7 +45,7 @@ public final class MessageResponse {
 
     private HttpConstants.HttpStatus httpStatus = null;
     private JsonObject responseBody = null;
-    private JsonObject headers;
+    private final JsonObject headers;
 
     public Builder() {
       this.headers = new JsonObject();

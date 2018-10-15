@@ -26,7 +26,7 @@ public class DoLearnerProfileBaselineProcessor implements AsyncMessageProcessor 
   private final Vertx vertx;
   private final Future<MessageResponse> result;
   private EventBusMessage eventBusMessage;
-  private DoLearnerProfileBaselineService service = new DoLearnerProfileBaselineService(
+  private final DoLearnerProfileBaselineService service = new DoLearnerProfileBaselineService(
       DBICreator.getDbiForDefaultDS(), DBICreator.getDbiForDsdbDS());
 
   public DoLearnerProfileBaselineProcessor(Vertx vertx, Message<JsonObject> message) {

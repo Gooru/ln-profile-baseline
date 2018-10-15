@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 class ContextValidatorImpl implements ContextValidator {
 
   private final DBI dbi4core;
-  private DBI dbi4ds;
+  private final DBI dbi4ds;
   private static final Logger LOGGER = LoggerFactory.getLogger(ContextValidatorImpl.class);
   private ContextCoreValidatorDao dao4core = null;
   private ContextDsValidatorDao dao4ds = null;

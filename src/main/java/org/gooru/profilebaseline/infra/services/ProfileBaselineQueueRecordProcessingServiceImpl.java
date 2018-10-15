@@ -4,7 +4,6 @@ import org.gooru.profilebaseline.infra.data.ProfileBaselineProcessingContext;
 import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
 import org.gooru.profilebaseline.infra.services.algebra.competency.CompetencyLine;
 import org.gooru.profilebaseline.infra.services.baselineprofilepersister.BaselineProfilePersister;
-import org.gooru.profilebaseline.infra.services.baselineprofilereadcacheupdater.BaselineProfileReadCacheUpdater;
 import org.gooru.profilebaseline.infra.services.classsetting.ClassGradeLowBoundFinder;
 import org.gooru.profilebaseline.infra.services.learnerprofile.LearnerProfileProvider;
 import org.gooru.profilebaseline.infra.services.queueoperators.ProfileBaselineDequeuer;
@@ -87,12 +86,9 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
       // merge these two lines
       CompetencyLine resultLine = learnerProfileLine.merge(lowGradeLine, true);
 
-      // persist the line in both master and details
-      Long baselineProfileId = BaselineProfilePersister.build(dbi4ds).persist(context, resultLine);
+      // persist the baseline
+      BaselineProfilePersister.build(dbi4ds).persist(context, resultLine);
 
-      // morph into read API response and update it in json field
-      BaselineProfileReadCacheUpdater.build(dbi4ds)
-          .createCachedResponseAndUpdateProfile(context, baselineProfileId);
 
     } catch (Throwable e) {
       LOGGER.warn("Not able to do profile baseline for model: '{}'. Will dequeue record.", e);
