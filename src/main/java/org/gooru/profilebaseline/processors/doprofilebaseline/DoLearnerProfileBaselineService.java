@@ -50,20 +50,21 @@ class DoLearnerProfileBaselineService {
 
   private void resetProfileBaselineForSpecifiedMembersForIL() {
     fetchDao().resetProfileBaselineInfoForILForSpecifiedUsers(
-        CollectionUtils.convertFromListUUIDToSqlArrayOfUUID(command.getMemberIds()),
-        command.getCourseId());
+        CollectionUtils.convertFromUUIDListToSqlArrayOfString(command.getMemberIds()),
+        command.getCourseId().toString());
   }
 
   private void resetProfileBaselineForSpecifiedMembersInClass() {
     fetchDao().resetProfileBaselineInfoInClassForSpecifiedUsers(
-        CollectionUtils.convertFromListUUIDToSqlArrayOfUUID(command.getMemberIds()),
-        command.getCourseId(),
-        command.getClassId());
+        CollectionUtils.convertFromUUIDListToSqlArrayOfString(command.getMemberIds()),
+        command.getCourseId().toString(),
+        command.getClassId().toString());
   }
 
   private void resetProfileBaselineForWholeClass() {
     fetchDao()
-        .resetProfileBaselineInfoInClassForAllUsers(command.getCourseId(), command.getClassId());
+        .resetProfileBaselineInfoInClassForAllUsers(command.getCourseId().toString(),
+            command.getClassId().toString());
   }
 
 

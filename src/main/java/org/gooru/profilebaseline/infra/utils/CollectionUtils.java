@@ -64,6 +64,11 @@ public class CollectionUtils {
     return PGArray.arrayOf(UUID.class, uuids);
   }
 
+  public static PGArray<String> convertFromUUIDListToSqlArrayOfString(List<UUID> input) {
+    List<String> strings = convertList(input, UUID::toString);
+    return PGArray.arrayOf(String.class, strings);
+  }
+
   public static PGArray<UUID> convertFromListUUIDToSqlArrayOfUUID(List<UUID> input) {
     return PGArray.arrayOf(UUID.class, input);
   }
