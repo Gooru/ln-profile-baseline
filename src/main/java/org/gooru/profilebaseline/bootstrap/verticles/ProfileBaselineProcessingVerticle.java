@@ -67,8 +67,7 @@ public class ProfileBaselineProcessingVerticle extends AbstractVerticle {
   }
 
   private void sendMessageToPostProcessor(ProfileBaselineQueueModel model) {
-    // TODO: Implement this
-    JsonObject request = new JsonObject();
+    JsonObject request = new JsonObject(model.toJson());
 
     vertx.eventBus()
         .send(Constants.EventBus.MBEP_LP_BASELINE_POST_PROCESSOR, request, new DeliveryOptions()

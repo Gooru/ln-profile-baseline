@@ -73,7 +73,6 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
     LOGGER.debug("Doing real processing");
     context = ProfileBaselineProcessingContext.buildFromProfileBaselineQueueModel(model);
 
-    // Don't let exception leak, handle it here
     try {
       validate();
       initializeSubject();
@@ -91,7 +90,10 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
 
 
     } catch (Throwable e) {
-      LOGGER.warn("Not able to do profile baseline for model: '{}'. Will dequeue record.", e);
+      LOGGER.warn("Not able to do profile baseline for model: '{}'. Will dequeue record.",
+          model.toJson(), e);
+      throw new IllegalStateException(
+          "Not able to do profile baseline for model: " + model.toJson(), e);
     } finally {
       dequeueRecord();
     }

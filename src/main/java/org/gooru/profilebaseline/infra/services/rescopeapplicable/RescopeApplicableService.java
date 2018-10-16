@@ -1,41 +1,24 @@
 package org.gooru.profilebaseline.infra.services.rescopeapplicable;
 
 import java.util.UUID;
-import org.gooru.profilebaseline.infra.components.AppConfiguration;
 import org.gooru.profilebaseline.infra.jdbi.DBICreator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.skife.jdbi.v2.DBI;
 
 /**
- * @author ashish on 17/5/18.
+ * @author ashish.
  */
-public final class RescopeApplicableService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RescopeApplicableService.class);
+public interface RescopeApplicableService {
 
-  public static boolean isRescopeApplicableToClass(UUID classId) {
-    RescopeApplicableDao dao = getRescopeApplicableDao();
-    String courseId = dao.fetchCourseForClass(classId);
-    if (courseId == null) {
-      LOGGER.info("Course is not assigned to class '{}' hence rescope not applicable",
-          classId.toString());
-      return false;
-    }
-    return AppConfiguration.getInstance().getRescopeApplicableCourseVersion()
-        .equals(dao.fetchCourseVersion(courseId));
+  boolean isRescopeApplicableToClass(UUID classId);
+
+  boolean isRescopeApplicableToCourseInIL(UUID courseId);
+
+  static RescopeApplicableService build(DBI dbi) {
+    return new RescopeApplicableServiceImpl(dbi);
   }
 
-  public static boolean isRescopeApplicableToCourseInIL(UUID courseId) {
-    RescopeApplicableDao dao = getRescopeApplicableDao();
-    return AppConfiguration.getInstance().getRescopeApplicableCourseVersion()
-        .equals(dao.fetchCourseVersion(courseId));
-  }
-
-  private static RescopeApplicableDao getRescopeApplicableDao() {
-    return DBICreator.getDbiForDefaultDS().onDemand(RescopeApplicableDao.class);
-  }
-
-  private RescopeApplicableService() {
-    throw new AssertionError();
+  static RescopeApplicableService build() {
+    return new RescopeApplicableServiceImpl(DBICreator.getDbiForDefaultDS());
   }
 }

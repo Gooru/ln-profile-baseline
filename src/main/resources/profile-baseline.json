@@ -31,7 +31,8 @@
       "instances": 1,
       "worker": false,
       "config": {
-        "lpbaseline.uri": "",
+        "rescope.uri": "http://localhost:8081/internal/scope/skipped",
+        "route0.uri": "http://localhost:8082/internal/rtd",
         "http.timeout": 60000,
         "http.poolSize": 20
       }

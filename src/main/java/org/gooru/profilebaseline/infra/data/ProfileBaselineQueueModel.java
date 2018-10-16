@@ -57,6 +57,12 @@ public class ProfileBaselineQueueModel {
         .put("priority", priority).put("status", status).toString();
   }
 
+  public String toJsonSummarized() {
+    return new JsonObject().put("userId", UuidUtils.uuidToString(userId))
+        .put("courseId", UuidUtils.uuidToString(courseId))
+        .put("classId", UuidUtils.uuidToString(classId)).toString();
+  }
+
   public Long getId() {
     return id;
   }

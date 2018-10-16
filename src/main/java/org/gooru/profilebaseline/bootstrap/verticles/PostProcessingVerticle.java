@@ -20,8 +20,7 @@ import org.slf4j.LoggerFactory;
 public class PostProcessingVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PostProcessingVerticle.class);
-  private HttpClient client;
-  private String lpbaselineUri;
+  private ReRouteProcessingAttributes reRouteProcessingAttributes;
 
   @Override
   public void start(Future<Void> startFuture) {
@@ -51,8 +50,8 @@ public class PostProcessingVerticle extends AbstractVerticle {
     Future<MessageResponse> future;
     switch (op) {
       case Constants.Message.MSG_OP_POSTPROCESS_RESCOPE_R0:
-        // TODO: Implement this
-        future = ProcessorBuilder.buildPlaceHolderExceptionProcessor(vertx, message).process();
+        future = ProcessorBuilder
+            .buildReRoutePostProcessor(vertx, message, reRouteProcessingAttributes).process();
         break;
       default:
         LOGGER.warn("Invalid operation type");
@@ -72,14 +71,42 @@ public class PostProcessingVerticle extends AbstractVerticle {
 
     final Integer timeout = config().getInteger("http.timeout");
     final Integer poolSize = config().getInteger("http.poolSize");
-    client = vertx.createHttpClient(
-        new HttpClientOptions().setConnectTimeout(timeout).setMaxPoolSize(poolSize));
-    lpbaselineUri = config().getString("lpbaseline.uri");
-
     Objects.requireNonNull(timeout);
     Objects.requireNonNull(poolSize);
-    Objects.requireNonNull(lpbaselineUri);
+    HttpClient client = vertx.createHttpClient(
+        new HttpClientOptions().setConnectTimeout(timeout).setMaxPoolSize(poolSize));
+    String rescopeUri = config().getString("rescope.uri");
+    String route0Uri = config().getString("route0.uri");
+    Objects.requireNonNull(rescopeUri);
+    Objects.requireNonNull(route0Uri);
 
+    reRouteProcessingAttributes = new ReRouteProcessingAttributes(client, rescopeUri, route0Uri);
   }
 
+  public static class ReRouteProcessingAttributes {
+
+    private final HttpClient client;
+    private final String rescopeUri;
+    private final String route0Uri;
+
+
+    ReRouteProcessingAttributes(HttpClient client, String rescopeUri,
+        String route0Uri) {
+      this.client = client;
+      this.rescopeUri = rescopeUri;
+      this.route0Uri = route0Uri;
+    }
+
+    public HttpClient getClient() {
+      return client;
+    }
+
+    public String getRescopeUri() {
+      return rescopeUri;
+    }
+
+    public String getRoute0Uri() {
+      return route0Uri;
+    }
+  }
 }
