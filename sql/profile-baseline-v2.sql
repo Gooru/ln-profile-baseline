@@ -19,4 +19,5 @@ CREATE UNIQUE INDEX lpb_ucs_unique_idx ON learner_profile_baselined USING btree 
 
 alter table class add column grade_lower_bound bigint;
 alter table class add column grade_upper_bound bigint;
+alter table class add column route0_applicable boolean NOT NULL default false;
 

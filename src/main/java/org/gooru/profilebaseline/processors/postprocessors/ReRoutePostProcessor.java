@@ -39,8 +39,7 @@ public class ReRoutePostProcessor implements AsyncMessageProcessor {
         .fromJson(message.body().toString());
     vertx.<RerouteApplicabilityProvider>executeBlocking(future -> {
       RerouteApplicabilityProvider applicabilityProvider = RerouteApplicabilityProviderService
-          .build(
-              DBICreator.getDbiForDefaultDS()).getProvider(model);
+          .build(DBICreator.getDbiForDefaultDS()).getProvider(model);
       future.complete(applicabilityProvider);
     }, asyncResult -> {
       if (asyncResult.succeeded()) {
@@ -66,45 +65,47 @@ public class ReRoutePostProcessor implements AsyncMessageProcessor {
   }
 
   private void triggerRoute0(ProfileBaselineQueueModel model) {
-    LOGGER.debug("Triggering r0");
+    LOGGER.debug("Triggering R0");
+    String requestBody = postBodyFromModel(model);
     HttpClientRequest request = reRouteProcessingAttributes.getClient()
         .postAbs(reRouteProcessingAttributes.getRoute0Uri(), response -> {
           if (response.statusCode() != HttpConstants.HttpStatus.SUCCESS.getCode()) {
             LOGGER.warn("Route0 trigger failed, status code: '{}', for model '{}'",
-                response.statusCode(), model.toJson());
+                response.statusCode(), requestBody);
           } else {
             LOGGER.warn("Route0 triggered successfully, status code: '{}', for model '{}'",
-                response.statusCode(), model.toJson());
+                response.statusCode(), requestBody);
           }
         }).exceptionHandler(ex -> {
           LOGGER.warn(
               "Error while communicating with remote server to trigger Route0 for model: '{}'",
-              model.toJson(), ex);
+              requestBody, ex);
         });
 
     request.putHeader(HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.CONTENT_TYPE_JSON)
-        .end(postBodyFromModel(model));
+        .end(requestBody);
   }
 
   private void triggerRescope(ProfileBaselineQueueModel model) {
     LOGGER.debug("Triggering rescope");
+    String requestBody = postBodyFromModel(model);
     HttpClientRequest request = reRouteProcessingAttributes.getClient()
         .postAbs(reRouteProcessingAttributes.getRescopeUri(), response -> {
           if (response.statusCode() != HttpConstants.HttpStatus.SUCCESS.getCode()) {
             LOGGER.warn("Rescope trigger failed, status code: '{}', for model '{}'",
-                response.statusCode(), model.toJson());
+                response.statusCode(), requestBody);
           } else {
             LOGGER.warn("Rescope triggered successfully, status code: '{}', for model '{}'",
-                response.statusCode(), model.toJson());
+                response.statusCode(), requestBody);
           }
         }).exceptionHandler(ex -> {
           LOGGER.warn(
               "Error while communicating with remote server to trigger Rescope for model: '{}'",
-              model.toJson(), ex);
+              requestBody, ex);
         });
 
     request.putHeader(HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.CONTENT_TYPE_JSON)
-        .end(postBodyFromModel(model));
+        .end(requestBody);
 
   }
 

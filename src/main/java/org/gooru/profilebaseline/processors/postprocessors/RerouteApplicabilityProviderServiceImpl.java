@@ -1,6 +1,8 @@
 package org.gooru.profilebaseline.processors.postprocessors;
 
 import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
+import org.gooru.profilebaseline.infra.services.r0applicable.Route0ApplicableService;
+import org.gooru.profilebaseline.infra.services.rescopeapplicable.RescopeApplicableService;
 import org.skife.jdbi.v2.DBI;
 
 /**
@@ -12,6 +14,7 @@ class RerouteApplicabilityProviderServiceImpl implements
 
   private final DBI dbi;
   private ProfileBaselineQueueModel model;
+  private boolean rescopeApplicable, route0Applicable;
 
   RerouteApplicabilityProviderServiceImpl(DBI dbi) {
     this.dbi = dbi;
@@ -28,12 +31,18 @@ class RerouteApplicabilityProviderServiceImpl implements
   }
 
   private RerouteApplicabilityProvider routeApplicabilityProviderForIL() {
-    // TODO: Provide implementation
-    return null;
+    rescopeApplicable = RescopeApplicableService.build(dbi)
+        .isRescopeApplicableToCourseInIL(model.getCourseId());
+    route0Applicable = Route0ApplicableService.build(dbi)
+        .isRoute0ApplicableToCourseInIL(model.getCourseId());
+    return new RerouteApplicabilityProvider(rescopeApplicable, route0Applicable);
   }
 
   private RerouteApplicabilityProvider routeApplicabilityProviderForClass() {
-    // TODO: Provide implementation
-    return null;
+    rescopeApplicable = RescopeApplicableService.build(dbi)
+        .isRescopeApplicableToClass(model.getClassId());
+    route0Applicable = Route0ApplicableService.build(dbi)
+        .isRoute0ApplicableToClass(model.getClassId());
+    return new RerouteApplicabilityProvider(rescopeApplicable, route0Applicable);
   }
 }
