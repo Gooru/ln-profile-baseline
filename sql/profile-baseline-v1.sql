@@ -32,5 +32,6 @@ COMMENT on COLUMN profile_baseline_queue.priority IS '1 means setting changed in
 
 alter table class add column grade_lower_bound bigint;
 alter table class add column grade_upper_bound bigint;
+alter table class add column grade_current bigint;
 
 
