@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
  * In both cases, the common validations are:
  * <ul>
  * <li>The course is tagged to a subject bucket</li>
- * <li>The user has baselined learner profile for specified context</li>
  * </ul>
  *
  * @author ashish.
@@ -87,32 +86,6 @@ class ContextValidatorImpl implements ContextValidator {
           context.getCourseId());
       throw new IllegalStateException("Subject bucket is not present or is empty for course: " +
           context.getCourseId());
-    }
-    if (context.isInClassExperience()) {
-      validatePresenceOfBaselinedLPForUserInClass(subjectBucket);
-    } else {
-      validatePresenceOfBaselinedLPForUserInIL(subjectBucket);
-    }
-
-  }
-
-  private void validatePresenceOfBaselinedLPForUserInIL(String subjectBucket) {
-    if (!getDao4Ds().validateLPBaselinePresenceForIL(context.getUserId().toString(),
-        context.getCourseId().toString(), subjectBucket)) {
-      String contextString = context.toString();
-      LOGGER.warn("LP baseline not present for context: '{}'", contextString);
-      throw new IllegalStateException(
-          "LP baseline not present for context : " + contextString);
-    }
-  }
-
-  private void validatePresenceOfBaselinedLPForUserInClass(String subjectBucket) {
-    if (!getDao4Ds().validateLPBaselinePresenceInClass(context.getUserId().toString(),
-        context.getCourseId().toString(), context.getClassId().toString(), subjectBucket)) {
-      String contextString = context.toString();
-      LOGGER.warn("LP baseline not present for context: '{}'", contextString);
-      throw new IllegalStateException(
-          "LP baseline not present for context : " + contextString);
     }
   }
 

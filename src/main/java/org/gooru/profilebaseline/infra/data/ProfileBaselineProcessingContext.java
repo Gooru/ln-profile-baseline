@@ -68,7 +68,7 @@ public class ProfileBaselineProcessingContext {
 
   @Override
   public String toString() {
-    return "RescopeProcessorContext{" +
+    return "ProfileBaselineProcessingContext{" +
         "userId=" + userId +
         ", courseId=" + courseId +
         ", classId=" + classId +
