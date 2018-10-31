@@ -55,7 +55,7 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
   @Override
   public void doProfileBaseline(ProfileBaselineQueueModel model) {
     this.model = model;
-    if (!ProfileBaselineProcessingEligibilityVerifier.build(dbi4core)
+    if (!ProfileBaselineProcessingEligibilityVerifier.build(dbi4core, dbi4ds)
         .isEligibleForProcessing(model)) {
       LOGGER.debug("Record is not found to be in dispatched state, may be processed already.");
       dequeueRecord();

@@ -13,11 +13,12 @@ public interface ProfileBaselineProcessingEligibilityVerifier {
   boolean isEligibleForProcessing(ProfileBaselineQueueModel model);
 
   static ProfileBaselineProcessingEligibilityVerifier build() {
-    return new ProfileBaselineProcessingEligibilityVerifierImpl(DBICreator.getDbiForDefaultDS());
+    return new ProfileBaselineProcessingEligibilityVerifierImpl(DBICreator.getDbiForDefaultDS(),
+        DBICreator.getDbiForDsdbDS());
   }
 
-  static ProfileBaselineProcessingEligibilityVerifier build(DBI dbi) {
-    return new ProfileBaselineProcessingEligibilityVerifierImpl(dbi);
+  static ProfileBaselineProcessingEligibilityVerifier build(DBI dbi4core, DBI dbi4ds) {
+    return new ProfileBaselineProcessingEligibilityVerifierImpl(dbi4core, dbi4ds);
   }
 
 }

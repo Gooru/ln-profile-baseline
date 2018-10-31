@@ -12,14 +12,17 @@ import org.slf4j.LoggerFactory;
 class ProfileBaselineProcessingEligibilityVerifierImpl implements
     ProfileBaselineProcessingEligibilityVerifier {
 
-  private final DBI dbi;
+  private final DBI dbi4core;
+  private final DBI dbi4ds;
   private static final Logger LOGGER = LoggerFactory
       .getLogger(ProfileBaselineProcessingEligibilityVerifierImpl.class);
   private ProfileBaselineQueueModel model;
-  private ProfileBaselineProcessingEligibilityVerifierDao dao;
+  private ProfileBaselineProcessingEligibilityVerifierDao dao4core;
+  private ProfileBaselineProcessingEligibilityVerifierDao dao4ds;
 
-  ProfileBaselineProcessingEligibilityVerifierImpl(DBI dbi) {
-    this.dbi = dbi;
+  ProfileBaselineProcessingEligibilityVerifierImpl(DBI dbi4core, DBI dbi4ds) {
+    this.dbi4core = dbi4core;
+    this.dbi4ds = dbi4ds;
   }
 
   @Override
@@ -40,20 +43,27 @@ class ProfileBaselineProcessingEligibilityVerifierImpl implements
 
   private boolean wasBaselineAlreadyDone() {
     if (model.getClassId() == null) {
-      return fetchDao().profileBaselineDoneForUserInIL(model);
+      return fetchDsDao().profileBaselineDoneForUserInIL(model);
     }
-    return fetchDao().profileBaselineDoneForUserInClass(model);
+    return fetchDsDao().profileBaselineDoneForUserInClass(model);
   }
 
   private boolean recordIsStillInDispatchedState() {
-    return fetchDao().isQueuedRecordStillDispatched(model.getId());
+    return fetchCoreDao().isQueuedRecordStillDispatched(model.getId());
   }
 
-  private ProfileBaselineProcessingEligibilityVerifierDao fetchDao() {
-    if (dao == null) {
-      dao = dbi.onDemand(ProfileBaselineProcessingEligibilityVerifierDao.class);
+  private ProfileBaselineProcessingEligibilityVerifierDao fetchCoreDao() {
+    if (dao4core == null) {
+      dao4core = dbi4core.onDemand(ProfileBaselineProcessingEligibilityVerifierDao.class);
     }
-    return dao;
+    return dao4core;
+  }
+
+  private ProfileBaselineProcessingEligibilityVerifierDao fetchDsDao() {
+    if (dao4ds == null) {
+      dao4ds = dbi4ds.onDemand(ProfileBaselineProcessingEligibilityVerifierDao.class);
+    }
+    return dao4ds;
   }
 
 }

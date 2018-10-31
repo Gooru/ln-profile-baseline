@@ -28,7 +28,7 @@ public final class ProfileBaselineQueueReaderAndDispatcher implements Initialize
   private static final ProfileBaselineQueueReaderAndDispatcher ourInstance = new ProfileBaselineQueueReaderAndDispatcher();
   private static final int delay = 1_000;
   private static long timerId;
-  private static boolean firstTrigger = false;
+  private static boolean firstTrigger = true;
   private static final Logger LOGGER = LoggerFactory
       .getLogger(ProfileBaselineQueueReaderAndDispatcher.class);
   private static final int LP_BASELINE_PROCESS_TIMEOUT = 300;
