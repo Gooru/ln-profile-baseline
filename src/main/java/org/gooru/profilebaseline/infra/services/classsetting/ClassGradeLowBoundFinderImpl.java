@@ -20,6 +20,7 @@ class ClassGradeLowBoundFinderImpl implements ClassGradeLowBoundFinder {
   private final DBI dbi4ds;
   private Long gradeLowerBoundInClass;
   private ClassGradeLowBoundFinderDao dao4core;
+  private ClassGradeLowBoundFinderDao dao4ds;
   private ProfileBaselineProcessingContext context;
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassGradeLowBoundFinderImpl.class);
 
@@ -47,7 +48,7 @@ class ClassGradeLowBoundFinderImpl implements ClassGradeLowBoundFinder {
   }
 
   private CompetencyLine earthlineForGradeAndSubject() {
-    List<Competency> earthLineCompetencies = fetchDao4Core()
+    List<Competency> earthLineCompetencies = fetchDao4DS()
         .fetchCompetenciesForEarthlineForGradeAndSubject(context.getSubject(),
             gradeLowerBoundInClass);
     if (earthLineCompetencies != null && !earthLineCompetencies.isEmpty()) {
@@ -75,4 +76,12 @@ class ClassGradeLowBoundFinderImpl implements ClassGradeLowBoundFinder {
     }
     return dao4core;
   }
+
+  private ClassGradeLowBoundFinderDao fetchDao4DS() {
+    if (dao4ds == null) {
+      dao4ds = dbi4ds.onDemand(ClassGradeLowBoundFinderDao.class);
+    }
+    return dao4ds;
+  }
+
 }

@@ -31,7 +31,7 @@
       "instances": 1,
       "worker": false,
       "config": {
-        "rescope.uri": "http://localhost:8081/internal/scope/skipped",
+        "rescope.uri": "http://localhost:8081/api/internal/rescope",
         "route0.uri": "http://localhost:8082/internal/rtd",
         "http.timeout": 60000,
         "http.poolSize": 20
@@ -55,7 +55,8 @@
     }
   },
   "app.configuration": {
-    "context.mbus.timeout.seconds": 60
+    "context.mbus.timeout.seconds": 60,
+    "rescope.applicable.course.version": "premium"
   },
   "vertxOptions": {
     "workerPoolSize": 40,
