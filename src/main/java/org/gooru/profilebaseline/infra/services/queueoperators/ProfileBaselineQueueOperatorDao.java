@@ -8,7 +8,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 interface ProfileBaselineQueueOperatorDao {
 
-  @SqlUpdate("update ProfileBaseline_queue set status = 0 where status != 0")
+  @SqlUpdate("update profile_baseline_queue set status = 0 where status != 0")
   void initializeQueueStatus();
 
   @Mapper(ProfileBaselineQueueModel.ProfileBaselineQueueModelMapper.class)
