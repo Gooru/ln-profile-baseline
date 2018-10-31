@@ -13,6 +13,6 @@ interface BaselineProfilePersisterDao {
 
   @GetGeneratedKeys
   @SqlQuery("insert into baseline_learner_profile (tx_subject_code, class_id, course_id, user_id, gut_codes, lp_data) values (:subjectCode, :classId, :courseId, :userId, :gutCodes, :lpData)")
-  Long persistLearnerProfileBaselined(@BindBean("model") LearnerProfileBaselinedModelBean model);
+  Long persistLearnerProfileBaselined(@BindBean LearnerProfileBaselinedModelBean model);
 
 }
