@@ -36,7 +36,7 @@ class LearnerProfileProviderImpl implements LearnerProfileProvider {
 
   private LearnerProfileProviderDao fetchDsDao() {
     if (dsDao == null) {
-      dsDao = dbi4core.onDemand(LearnerProfileProviderDao.class);
+      dsDao = dbi4ds.onDemand(LearnerProfileProviderDao.class);
     }
     return dsDao;
   }
