@@ -78,7 +78,7 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
       initializeSubject();
       // fetch low grade
       CompetencyLine lowGradeLine = ClassGradeLowBoundFinder.build(dbi4core, dbi4ds)
-          .findLowGradeForClass(context);
+          .findLowGradeForClassMember(context);
       // fetch learner profile
       CompetencyLine learnerProfileLine = LearnerProfileProvider.build(dbi4core, dbi4ds)
           .findLearnerProfileForUser(context);

@@ -11,7 +11,7 @@ import org.skife.jdbi.v2.DBI;
 
 public interface ClassGradeLowBoundFinder {
 
-  CompetencyLine findLowGradeForClass(ProfileBaselineProcessingContext context);
+  CompetencyLine findLowGradeForClassMember(ProfileBaselineProcessingContext context);
 
   static ClassGradeLowBoundFinder build(DBI dbi4core, DBI dbi4ds) {
     return new ClassGradeLowBoundFinderImpl(dbi4core, dbi4ds);

@@ -17,6 +17,10 @@ interface ClassGradeLowBoundFinderDao {
   @SqlQuery("select grade_lower_bound from class where id = :classId and is_deleted = false")
   Long fetchGradeLowerBoundForSpecifiedClass(@Bind("classId") UUID classId);
 
+  @SqlQuery("select grade_lower_bound from class_member where class_id = :classId and user_id = :userId")
+  Long fetchGradeLowerBoundForSpecifiedClassMember(@Bind("classId") UUID classId,
+      @Bind("userId") UUID userId);
+
   @SqlQuery("select exists (select 1 from grade_master where id = :gradeId)")
   boolean validateGrade(@Bind("gradeId") Long gradeId);
 

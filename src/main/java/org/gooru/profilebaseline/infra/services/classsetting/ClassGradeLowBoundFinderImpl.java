@@ -30,7 +30,7 @@ class ClassGradeLowBoundFinderImpl implements ClassGradeLowBoundFinder {
   }
 
   @Override
-  public CompetencyLine findLowGradeForClass(ProfileBaselineProcessingContext context) {
+  public CompetencyLine findLowGradeForClassMember(ProfileBaselineProcessingContext context) {
     this.context = context;
     if (context.isILExperience()) {
       return CompetencyAlgebraDefaultBuilder.getEmptyCompetencyLine();
@@ -67,7 +67,11 @@ class ClassGradeLowBoundFinderImpl implements ClassGradeLowBoundFinder {
 
   private void initializeGradeLowerBoundForClass() {
     gradeLowerBoundInClass = fetchDao4Core()
-        .fetchGradeLowerBoundForSpecifiedClass(context.getClassId());
+        .fetchGradeLowerBoundForSpecifiedClassMember(context.getClassId(), context.getUserId());
+    if (gradeLowerBoundInClass == null) {
+      gradeLowerBoundInClass = fetchDao4Core()
+          .fetchGradeLowerBoundForSpecifiedClass(context.getClassId());
+    }
   }
 
   private ClassGradeLowBoundFinderDao fetchDao4Core() {
