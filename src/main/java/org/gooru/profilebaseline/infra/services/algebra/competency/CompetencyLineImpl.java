@@ -90,7 +90,7 @@ class CompetencyLineImpl implements CompetencyLine {
             mergeTwoValidCompetencies(sourceCompetency, targetCompetency, mergeWithHighValue));
       }
     }
-    return new CompetencyLineImpl(domains, resultDomainCodeCompetencyMap);
+    return new CompetencyLineImpl(new ArrayList<>(domainCodeSet), resultDomainCodeCompetencyMap);
   }
 
   private Competency mergeTwoValidCompetencies(Competency sourceCompetency,
