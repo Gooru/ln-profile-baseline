@@ -20,11 +20,11 @@ interface RequestQueueDao {
   boolean isClassNotDeletedAndNotArchived(@Bind("classId") UUID classId);
 
   @Mapper(UUIDMapper.class)
-  @SqlQuery("select user_id from class_member where class_id = :classId and user_id is not null")
+  @SqlQuery("select user_id from class_member where class_id = :classId and user_id is not null and is_active = true")
   List<UUID> fetchMembersOfClass(@Bind("classId") UUID classId);
 
   @Mapper(UUIDMapper.class)
-  @SqlQuery("select user_id from class_member where class_id = :classId and user_id = any(:usersList)")
+  @SqlQuery("select user_id from class_member where class_id = :classId and user_id = any(:usersList) and is_active = true")
   List<UUID> fetchSpecifiedMembersOfClass(@Bind("classId") UUID classId,
       @Bind("usersList") PGArray<UUID> members);
 
