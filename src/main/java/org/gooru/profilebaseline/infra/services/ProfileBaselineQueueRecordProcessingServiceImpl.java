@@ -3,6 +3,7 @@ package org.gooru.profilebaseline.infra.services;
 import org.gooru.profilebaseline.infra.data.ProfileBaselineProcessingContext;
 import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
 import org.gooru.profilebaseline.infra.services.algebra.competency.CompetencyLine;
+import org.gooru.profilebaseline.infra.services.baselinedonehandler.BaselineDoneInformer;
 import org.gooru.profilebaseline.infra.services.baselineprofilepersister.BaselineProfilePersister;
 import org.gooru.profilebaseline.infra.services.classsetting.ClassGradeLowBoundFinder;
 import org.gooru.profilebaseline.infra.services.learnerprofile.LearnerProfileProvider;
@@ -88,7 +89,8 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
       // persist the baseline
       BaselineProfilePersister.build(dbi4ds).persist(context, resultLine);
 
-
+      // do whatever post processing needed
+      doPostProcessing();
     } catch (Throwable e) {
       LOGGER.warn("Not able to do profile baseline for model: '{}'. Will dequeue record.",
           model.toJson(), e);
@@ -97,6 +99,10 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
     } finally {
       dequeueRecord();
     }
+  }
+
+  private void doPostProcessing() {
+    BaselineDoneInformer.build(dbi4core).inform(context);
   }
 
   private void validate() {
