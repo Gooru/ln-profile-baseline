@@ -1,18 +1,19 @@
 package org.gooru.profilebaseline.processors.postprocessors;
 
+import org.gooru.profilebaseline.bootstrap.verticles.PostProcessingVerticle.ReRouteProcessingAttributes;
+import org.gooru.profilebaseline.infra.constants.HttpConstants;
+import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
+import org.gooru.profilebaseline.infra.jdbi.DBICreator;
+import org.gooru.profilebaseline.infra.services.route0remover.Route0Remover;
+import org.gooru.profilebaseline.processors.AsyncMessageProcessor;
+import org.gooru.profilebaseline.responses.MessageResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.json.JsonObject;
-import org.gooru.profilebaseline.bootstrap.verticles.PostProcessingVerticle.ReRouteProcessingAttributes;
-import org.gooru.profilebaseline.infra.constants.HttpConstants;
-import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
-import org.gooru.profilebaseline.infra.jdbi.DBICreator;
-import org.gooru.profilebaseline.processors.AsyncMessageProcessor;
-import org.gooru.profilebaseline.responses.MessageResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author ashish.
@@ -59,9 +60,13 @@ public class ReRoutePostProcessor implements AsyncMessageProcessor {
     }
 
     if (rerouteApplicabilityProvider.isRoute0Applicable()) {
+      if (model.getRoute0Override()) {
+        // if the route0 override flag is set to true, we need to remove the existing route0 content
+        LOGGER.debug("removing existing route0 contents");
+        Route0Remover.build(DBICreator.getDbiForDefaultDS()).remove(model);
+      }
       triggerRoute0(model);
     }
-
   }
 
   private void triggerRoute0(ProfileBaselineQueueModel model) {

@@ -32,16 +32,12 @@ class ProfileBaselineProcessingEligibilityVerifierImpl implements
       LOGGER.debug("Record is not found to be in dispatched state, may be processed already.");
       return false;
     }
-    if (wasBaselineAlreadyDone()) {
-      LOGGER.debug("Profile baseline was already done");
-      return false;
-    }
 
     return true;
   }
 
-
-  private boolean wasBaselineAlreadyDone() {
+  @Override
+  public boolean wasBaselineAlreadyDone(ProfileBaselineQueueModel model) {
     if (model.getClassId() == null) {
       return fetchDsDao().profileBaselineDoneForUserInIL(model);
     }
