@@ -26,6 +26,9 @@ public class ProfileBaselineQueueModel {
     model.courseId = UuidUtils.convertStringToUuid(json.getString("courseId"));
     model.userId = UuidUtils.convertStringToUuid(json.getString("userId"));
     model.id = json.getLong("id");
+    model.baselineOverride = json.getBoolean("baselineOverride");
+    model.rescopeOverride = json.getBoolean("rescopeOverride");
+    model.route0Override = json.getBoolean("route0Override");
     return model;
   }
 
@@ -49,12 +52,16 @@ public class ProfileBaselineQueueModel {
   private UUID classId;
   private int priority;
   private int status;
+  private Boolean baselineOverride;
+  private Boolean route0Override;
+  private Boolean rescopeOverride;
 
   public String toJson() {
     return new JsonObject().put("id", id).put("userId", UuidUtils.uuidToString(userId))
         .put("courseId", UuidUtils.uuidToString(courseId))
-        .put("classId", UuidUtils.uuidToString(classId))
-        .put("priority", priority).put("status", status).toString();
+        .put("classId", UuidUtils.uuidToString(classId)).put("priority", priority)
+        .put("status", status).put("baselineOverride", baselineOverride)
+        .put("route0Override", route0Override).put("rescopeOverride", rescopeOverride).toString();
   }
 
   public String toJsonSummarized() {
@@ -110,6 +117,30 @@ public class ProfileBaselineQueueModel {
   public void setStatus(int status) {
     this.status = status;
   }
+  
+  public Boolean getBaselineOverride() {
+    return baselineOverride;
+  }
+
+  public void setBaselineOverride(Boolean baselineOverride) {
+    this.baselineOverride = baselineOverride;
+  }
+
+  public Boolean getRoute0Override() {
+    return route0Override;
+  }
+
+  public void setRoute0Override(Boolean route0Override) {
+    this.route0Override = route0Override;
+  }
+
+  public Boolean getRescopeOverride() {
+    return rescopeOverride;
+  }
+
+  public void setRescopeOverride(Boolean rescopeOverride) {
+    this.rescopeOverride = rescopeOverride;
+  }
 
   public boolean isModelPersisted() {
     return id != null;
@@ -128,6 +159,9 @@ public class ProfileBaselineQueueModel {
       model.setUserId(UuidUtils.convertStringToUuid(resultSet.getString("user_id")));
       model.setCourseId(UuidUtils.convertStringToUuid(resultSet.getString("course_id")));
       model.setClassId(UuidUtils.convertStringToUuid(resultSet.getString("class_id")));
+      model.setBaselineOverride(resultSet.getBoolean("baseline_override"));
+      model.setRoute0Override(resultSet.getBoolean("route0_override"));
+      model.setRescopeOverride(resultSet.getBoolean("rescope_override"));
       return model;
     }
 
