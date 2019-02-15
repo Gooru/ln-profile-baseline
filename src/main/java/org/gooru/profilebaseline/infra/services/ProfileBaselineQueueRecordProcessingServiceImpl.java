@@ -5,6 +5,7 @@ import org.gooru.profilebaseline.infra.data.ProfileBaselineQueueModel;
 import org.gooru.profilebaseline.infra.services.algebra.competency.CompetencyLine;
 import org.gooru.profilebaseline.infra.services.baselinedonehandler.BaselineDoneInformer;
 import org.gooru.profilebaseline.infra.services.baselineprofilepersister.BaselineProfilePersister;
+import org.gooru.profilebaseline.infra.services.baselineprofileremover.ProfileBaselineRemover;
 import org.gooru.profilebaseline.infra.services.classsetting.ClassGradeLowBoundFinder;
 import org.gooru.profilebaseline.infra.services.learnerprofile.LearnerProfileProvider;
 import org.gooru.profilebaseline.infra.services.queueoperators.ProfileBaselineDequeuer;
@@ -56,12 +57,29 @@ class ProfileBaselineQueueRecordProcessingServiceImpl implements
   @Override
   public void doProfileBaseline(ProfileBaselineQueueModel model) {
     this.model = model;
-    if (!ProfileBaselineProcessingEligibilityVerifier.build(dbi4core, dbi4ds)
-        .isEligibleForProcessing(model)) {
+    ProfileBaselineProcessingEligibilityVerifier eligibilityVerifier =
+        ProfileBaselineProcessingEligibilityVerifier.build(dbi4core, dbi4ds);
+    if (!eligibilityVerifier.isEligibleForProcessing(model)) {
       LOGGER.debug("Record is not found to be in dispatched state, may be processed already.");
       dequeueRecord();
       return;
     }
+    
+    // If baseline override is true then remove the baseline and proceed for the baseline creation.
+    // Otherwise check if baseline is already generated, if so then then dequeue and exit. If
+    // baseline is not already generated then proceed for generation.
+    if (model.getBaselineOverride()) {
+      // regardless of baseline is done or not, we will remove the baseline and create fresh
+      LOGGER.debug("removing existing baseline");
+      ProfileBaselineRemover.build(dbi4ds).remove(model);
+    } else {
+      if (eligibilityVerifier.wasBaselineAlreadyDone(model)) {
+        LOGGER.debug("Baseline is already generated for this user. dequeue and exit");
+        dequeueRecord();
+        return;
+      }
+    }
+
     processRecord();
   }
 

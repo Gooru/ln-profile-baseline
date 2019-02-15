@@ -13,8 +13,8 @@ interface ProfileBaselineQueueOperatorDao {
 
   @Mapper(ProfileBaselineQueueModel.ProfileBaselineQueueModelMapper.class)
   @SqlQuery(
-      "select id, user_id, course_id, class_id, priority, status from profile_baseline_queue where status = 0 order by"
-          + " priority desc limit 1")
+      "select id, user_id, course_id, class_id, priority, status, baseline_override, route0_override, rescope_override from"
+      + " profile_baseline_queue where status = 0 order by priority desc limit 1")
   ProfileBaselineQueueModel getNextDispatchableModel();
 
   @SqlUpdate("update profile_baseline_queue set status = 1 where id = :modelId")

@@ -11,6 +11,8 @@ import org.skife.jdbi.v2.DBI;
 public interface ProfileBaselineProcessingEligibilityVerifier {
 
   boolean isEligibleForProcessing(ProfileBaselineQueueModel model);
+  
+  boolean wasBaselineAlreadyDone(ProfileBaselineQueueModel model);
 
   static ProfileBaselineProcessingEligibilityVerifier build() {
     return new ProfileBaselineProcessingEligibilityVerifierImpl(DBICreator.getDbiForDefaultDS(),
